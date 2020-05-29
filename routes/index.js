@@ -11,14 +11,14 @@ AWS.config.loadFromPath(__dirname + "/../config/awsconfig.json");
 const s3 = new AWS.S3();
 // S3 bucket and directory
 const BUCKET = "image-conversion-practice";
-const DIR = "raw-image/"
+const DIR = "raw-image";
 // Multer
 const upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: BUCKET,
     key: function (req, file, cb) {
-      cb(null, DIR + Date.now().toString() + "_" + file.originalname);
+      cb(null, DIR + "/" + Date.now().toString() + "_" + file.originalname);
     },
     acl: 'public-read-write'
   })
