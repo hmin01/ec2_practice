@@ -436,9 +436,8 @@
                     type: "POST",
                     url: "/upload",
                     data: formData,
-                    cache: false,
-                    contentType: false,
                     processData: false,
+                    contentType: false,
                     success: function(res) {
                         loadingClass.add('d-none');
                         alert(res.message);

@@ -18,7 +18,9 @@ const upload = multer({
     s3: s3,
     bucket: BUCKET,
     key: function (req, file, cb) {
-      cb(null, DIR + "/" + Date.now().toString() + "_" + file.originalname);
+      const filePath = DIR + "/" + Date.now().toString() + "_" + file.originalname;
+      console.log(filePath);
+      cb(null, filePath);
     },
     acl: 'public-read-write'
   })
@@ -31,7 +33,12 @@ router.get('/', function(req, res) {
 
 /* Upload image in S3 */
 router.post('/upload', upload.single('image'), function(req, res) {
-  res.json({result: true, message: "Successfully uploaded file!"});
+  try {
+    res.json({result: true, message: "Successfully uploaded file!"});
+  } catch (err) {
+    console.error(err);
+    res.json({result: false, message: "Server error (code: 500)"});
+  }
 });
 
 module.exports = router;
