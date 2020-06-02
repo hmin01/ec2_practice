@@ -5,13 +5,16 @@ const multer = require("multer");
 const multerS3 = require('multer-s3');
 // AWS
 const AWS = require('aws-sdk');
-// AWS config
-AWS.config.loadFromPath(__dirname + "/../config/awsconfig.json");
+AWS.config.update({
+  "accessKeyId": "",
+  "secretAccessKey": "",
+  "region": "ap-northeast-2"
+});
 // S3
 const s3 = new AWS.S3();
 // S3 bucket and directory
-const BUCKET = "image-conversion-practice";
-const DIR = "raw-image";
+const BUCKET = "Bucket_Name";
+const DIR = "Directory_Name";
 // Multer
 const upload = multer({
   storage: multerS3({
@@ -19,10 +22,9 @@ const upload = multer({
     bucket: BUCKET,
     key: function (req, file, cb) {
       const filePath = DIR + "/" + Date.now().toString() + "_" + file.originalname;
-      console.log(filePath);
       cb(null, filePath);
     },
-    acl: 'public-read-write'
+    acl: 'private'
   })
 });
 
@@ -34,6 +36,7 @@ router.get('/', function(req, res) {
 /* Upload image in S3 */
 router.post('/upload', upload.single('image'), function(req, res) {
   try {
+    console.log("Successfully Upload.");
     res.json({result: true, message: "Successfully uploaded file!"});
   } catch (err) {
     console.error(err);
